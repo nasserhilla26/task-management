@@ -17,6 +17,57 @@
         </a>
     </div>
 
+    <!-- Stats Cards -->
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">
+                        Total Tasks
+                    </h6>
+
+                    <h2 class="mb-0">
+                        {{ $totalTasks }}
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">
+                        Pending
+                    </h6>
+
+                    <h2 class="mb-0">
+                        {{ $pendingTasks }}
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">
+                        Completed
+                    </h6>
+
+                    <h2 class="mb-0">
+                        {{ $completedTasks }}
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Stats Cards -->
+
+
     @if ($tasks->isEmpty())
         <div class="alert alert-info">
             No tasks found.
@@ -42,11 +93,27 @@
                             <td>{{ $task->id }}</td>
 
                             <td>
-                                {{ $task->title }}
+                                <div class="fw-semibold">
+                                    {{ $task->title }}
+                                </div>
+
+                                @if ($task->description)
+                                    <small class="text-muted">
+                                        {{ \Illuminate\Support\Str::limit($task->description, 60) }}
+                                    </small>
+                                @endif
                             </td>
 
                             <td>
-                                {{ ucfirst($task->status) }}
+                                @if ($task->status === 'completed')
+                                    <span class="badge bg-success">
+                                        Completed
+                                    </span>
+                                @else
+                                    <span class="badge bg-warning text-dark">
+                                        Pending
+                                    </span>
+                                @endif
                             </td>
 
                             <td>
@@ -60,14 +127,14 @@
                                 <!-- View Button -->
                                 <a
                                     href="{{ route('tasks.show', $task) }}"
-                                    class="btn btn-sm btn-info"
+                                    class="btn btn-sm btn-outline-info"
                                 >
                                     View
                                 </a>
                                 <!-- Edit Button -->
                                 <a
                                     href="{{ route('tasks.edit', $task) }}"
-                                    class="btn btn-sm btn-warning"
+                                    class="btn btn-sm btn-outline-warning"
                                 >
                                     Edit
                                 </a>
@@ -82,7 +149,7 @@
                                     @csrf
                                     @method('DELETE')
 
-                                    <button type="submit" class="btn btn-sm btn-danger">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
                                         Delete
                                     </button>
                                 </form>

@@ -15,7 +15,7 @@
         <div>
             <a
                 href="{{ route('tasks.edit', $task) }}"
-                class="btn btn-warning"
+                class="btn btn-outline-warning"
             >
                 Edit
             </a>
@@ -29,54 +29,118 @@
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-body">
+    <div class="card border-0 shadow-sm">
 
-            <h2 class="card-title mb-4">
-                {{ $task->title }}
-            </h2>
+        <div class="card-body p-4">
 
-            <div class="mb-3">
-                <strong>Description</strong>
+            <div class="d-flex justify-content-between align-items-start mb-4">
 
-                <p class="mt-2">
-                    {{ $task->description ?? 'No description provided.' }}
-                </p>
+                <div>
+                    <h2 class="mb-1">
+                        {{ $task->title }}
+                    </h2>
+
+                    <small class="text-muted">
+                        Task #{{ $task->id }}
+                    </small>
+                </div>
+
+                <div>
+                    @if ($task->status === 'completed')
+                        <span class="badge bg-success fs-6">
+                            Completed
+                        </span>
+                    @else
+                        <span class="badge bg-warning text-dark fs-6">
+                            Pending
+                        </span>
+                    @endif
+                </div>
+
             </div>
 
-            <div class="mb-3">
-                <strong>Status</strong>
+            <hr>
 
-                <p class="mt-2">
-                    {{ ucfirst($task->status) }}
-                </p>
+            <div class="mb-4">
+                <h5>Description</h5>
+
+                @if ($task->description)
+                    <p class="text-muted mb-0">
+                        {{ $task->description }}
+                    </p>
+                @else
+                    <p class="text-muted fst-italic mb-0">
+                        No description provided.
+                    </p>
+                @endif
             </div>
 
-            <div class="mb-3">
-                <strong>Due Date</strong>
+            <div class="row">
 
-                <p class="mt-2">
-                    {{ $task->due_date?->format('M d, Y') ?? 'No due date' }}
-                </p>
-            </div>
+                <div class="col-md-6 mb-4">
+                    <h6 class="text-muted">
+                        Due Date
+                    </h6>
 
-            <div class="mb-3">
-                <strong>Created</strong>
+                    <p class="mb-0">
+                        {{ $task->due_date?->format('M d, Y') ?? 'No due date' }}
+                    </p>
+                </div>
 
-                <p class="mt-2">
-                    {{ $task->created_at->format('M d, Y h:i A') }}
-                </p>
-            </div>
+                <div class="col-md-6 mb-4">
+                    <h6 class="text-muted">
+                        Status
+                    </h6>
 
-            <div>
-                <strong>Last Updated</strong>
+                    <p class="mb-0">
+                        {{ ucfirst($task->status) }}
+                    </p>
+                </div>
 
-                <p class="mt-2 mb-0">
-                    {{ $task->updated_at->format('M d, Y h:i A') }}
-                </p>
+                <div class="col-md-6">
+                    <h6 class="text-muted">
+                        Created
+                    </h6>
+
+                    <p class="mb-0">
+                        {{ $task->created_at->format('M d, Y h:i A') }}
+                    </p>
+                </div>
+
+                <div class="col-md-6">
+                    <h6 class="text-muted">
+                        Last Updated
+                    </h6>
+
+                    <p class="mb-0">
+                        {{ $task->updated_at->format('M d, Y h:i A') }}
+                    </p>
+                </div>
+
             </div>
 
         </div>
+
+        <div class="card-footer bg-white border-0 p-4 pt-0">
+
+            <form
+                action="{{ route('tasks.destroy', $task) }}"
+                method="POST"
+                onsubmit="return confirm('Are you sure you want to delete this task?');"
+            >
+                @csrf
+                @method('DELETE')
+
+                <button
+                    type="submit"
+                    class="btn btn-outline-danger"
+                >
+                    Delete Task
+                </button>
+            </form>
+
+        </div>
+
     </div>
 
 @endsection
