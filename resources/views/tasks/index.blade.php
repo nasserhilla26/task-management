@@ -1,26 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+@extends('layouts.app')
 
-    <title>Task Management</title>
+@section('title', 'Tasks')
 
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
-</head>
+@section('content')
 
-<body>
-
-<div class="container py-5">
-    
-    @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
+<div class="container">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
@@ -73,6 +57,13 @@
                                 {{ $task->created_at->format('M d, Y') }}
                             </td>
                             <td>
+                                <!-- View Button -->
+                                <a
+                                    href="{{ route('tasks.show', $task) }}"
+                                    class="btn btn-sm btn-info"
+                                >
+                                    View
+                                </a>
                                 <!-- Edit Button -->
                                 <a
                                     href="{{ route('tasks.edit', $task) }}"
@@ -106,5 +97,4 @@
 
 </div>
 
-</body>
-</html>
+@endsection
