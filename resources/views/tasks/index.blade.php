@@ -48,6 +48,7 @@
                         <th>Status</th>
                         <th>Due Date</th>
                         <th>Created</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
 
@@ -70,6 +71,14 @@
 
                             <td>
                                 {{ $task->created_at->format('M d, Y') }}
+                            </td>
+                            <td>
+                                <a
+                                    href="{{ route('tasks.edit', $task) }}"
+                                    class="btn btn-sm btn-warning"
+                                >
+                                    Edit
+                                </a>
                             </td>
                         </tr>
                     @endforeach
