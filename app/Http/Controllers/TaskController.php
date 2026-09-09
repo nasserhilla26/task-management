@@ -12,13 +12,33 @@ class TaskController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $tasks = Task::latest()->get();
+        $query = Task::query();
 
-        $totalTasks = $tasks->count();
-        $pendingTasks = $tasks->where('status', 'pending')->count();
-        $completedTasks = $tasks->where('status', 'completed')->count();
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+
+            $query->where(function ($query) use ($search) {
+                $query->where('title', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        $tasks = $query
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        $totalTasks = Task::count();
+
+        $pendingTasks = Task::where('status', 'pending')->count();
+
+        $completedTasks = Task::where('status', 'completed')->count();
 
         return view('tasks.index', compact(
             'tasks',
@@ -27,7 +47,6 @@ class TaskController extends Controller
             'completedTasks'
         ));
     }
-
     /**
      * Show the form for creating a new resource.
      */

@@ -67,6 +67,92 @@
 
     <!-- Stats Cards -->
 
+    <!-- Search and Filtering -->
+     <form
+        action="{{ route('tasks.index') }}"
+        method="GET"
+        class="card border-0 shadow-sm mb-4"
+    >
+        <div class="card-body">
+
+            <div class="row g-3 align-items-end">
+
+                <div class="mb-1">
+                    <h5 class="mb-1">
+                        Find Tasks
+                    </h5>
+
+                    <p class="text-muted mb-0">
+                        Search by title or description, or filter by status.
+                    </p>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="search" class="form-label">
+                        Search
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="search"
+                        name="search"
+                        value="{{ request('search') }}"
+                        placeholder="Search by title or description..."
+                    >
+                </div>
+
+                <div class="col-md-4">
+                    <label for="status" class="form-label">
+                        Status
+                    </label>
+
+                    <select
+                        class="form-select"
+                        id="status"
+                        name="status"
+                    >
+                        <option value="">
+                            All statuses
+                        </option>
+
+                        <option
+                            value="pending"
+                            {{ request('status') === 'pending' ? 'selected' : '' }}
+                        >
+                            Pending
+                        </option>
+
+                        <option
+                            value="completed"
+                            {{ request('status') === 'completed' ? 'selected' : '' }}
+                        >
+                            Completed
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-md-2 d-flex gap-2">
+                    <button
+                        type="submit"
+                        class="btn btn-primary w-100"
+                    >
+                        Search
+                    </button>
+
+                    <a
+                        href="{{ route('tasks.index') }}"
+                        class="btn btn-secondary"
+                    >
+                        Clear
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+    </form>
+    <!-- Search and Filtering -->
 
     @if ($tasks->isEmpty())
         <div class="alert alert-info">
@@ -117,7 +203,33 @@
                             </td>
 
                             <td>
-                                {{ $task->due_date?->format('M d, Y') ?? 'No due date' }}
+                                @if (!$task->due_date)
+                                    <span class="text-muted">
+                                        No due date
+                                    </span>
+                                @elseif ($task->status !== 'completed' && $task->due_date->isToday())
+                                    <span class="text-warning fw-semibold">
+                                        Due today
+                                    </span>
+
+                                    <br>
+
+                                    <small class="text-muted">
+                                        {{ $task->due_date->format('M d, Y') }}
+                                    </small>
+                                @elseif ($task->status !== 'completed' && $task->due_date->isPast())
+                                    <span class="text-danger fw-semibold">
+                                        Overdue
+                                    </span>
+
+                                    <br>
+
+                                    <small class="text-muted">
+                                        {{ $task->due_date->format('M d, Y') }}
+                                    </small>
+                                @else
+                                    {{ $task->due_date->format('M d, Y') }}
+                                @endif
                             </td>
 
                             <td>
@@ -163,5 +275,24 @@
     @endif
 
 </div>
+
+<div class="d-flex justify-content-between align-items-center mt-4">
+
+    <div class="text-muted">
+        Showing
+        <strong>{{ $tasks->firstItem() ?? 0 }}</strong>
+        to
+        <strong>{{ $tasks->lastItem() ?? 0 }}</strong>
+        of
+        <strong>{{ $tasks->total() }}</strong>
+        tasks
+    </div>
+
+    <div>
+        {{ $tasks->links() }}
+    </div>
+
+</div>
+
 
 @endsection

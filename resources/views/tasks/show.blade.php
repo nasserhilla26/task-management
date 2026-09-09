@@ -83,7 +83,33 @@
                     </h6>
 
                     <p class="mb-0">
-                        {{ $task->due_date?->format('M d, Y') ?? 'No due date' }}
+                        @if (!$task->due_date)
+                            <span class="text-muted">
+                                No due date
+                            </span>
+                        @elseif ($task->status !== 'completed' && $task->due_date->isToday())
+                            <span class="text-warning fw-semibold">
+                                Due today
+                            </span>
+
+                            <br>
+
+                            <small class="text-muted">
+                                {{ $task->due_date->format('M d, Y') }}
+                            </small>
+                        @elseif ($task->status !== 'completed' && $task->due_date->isPast())
+                            <span class="text-danger fw-semibold">
+                                Overdue
+                            </span>
+
+                            <br>
+
+                            <small class="text-muted">
+                                {{ $task->due_date->format('M d, Y') }}
+                            </small>
+                        @else
+                            {{ $task->due_date->format('M d, Y') }}
+                        @endif
                     </p>
                 </div>
 
